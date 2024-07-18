@@ -6,9 +6,6 @@ const slice = createSlice({
         items: [],
     },
     reducers: {
-        setContacts(action) {
-            action.payload;
-          },
         addContact: (state, action) => {
             state.items.push(action.payload);
             },
