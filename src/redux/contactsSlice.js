@@ -1,22 +1,37 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchContacts } from './fetchContacts';
 
-const slice = createSlice({
-    name: "contacts",
+const contactsSlice = createSlice({
+    name: 'contacts',
     initialState: {
-        items: [],
+      items: [],
+      status: 'idle',
+      error: null,
     },
     reducers: {
-        addContact: (state, action) => {
-            state.items.push(action.payload);
-            },
-        deleteContact: (state, action) => {
-         state.items = state.items.filter(contact => contact.id !== action.payload)
-        },
+      addContact: (state, action) => {
+        state.items.push(action.payload);
+      },
+      deleteContact: (state, action) => {
+        state.items = state.items.filter(contact => contact.id !== action.payload);
+      },
     },
-})
-
-export const selectContacts = state => state.contacts.items;
-
-export const {setContacts, deleteContact, addContact } = slice.actions;
-
-export default slice.reducer;
+    extraReducers: (builder) => {
+      builder
+        .addCase(fetchContacts.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(fetchContacts.fulfilled, (state, action) => {
+          state.status = 'succeeded';
+          state.items = action.payload;
+        })
+        .addCase(fetchContacts.rejected, (state, action) => {
+          state.status = 'failed';
+          state.error = action.error.message;
+        });
+    },
+  });
+  
+  export const { addContact, deleteContact } = contactsSlice.actions;
+  export default contactsSlice.reducer;
+  export const selectContacts = state => state.contacts.items;

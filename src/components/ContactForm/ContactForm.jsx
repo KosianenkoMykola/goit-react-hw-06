@@ -3,33 +3,38 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { addContact } from "../../redux/contactsSlice";
-// import { nanoid } from "nanoid";
+import { nanoid } from "nanoid";
 
 export default function ContactForm() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const id = nanoid()
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const name = e.target.elements.name.value;
-    const number = e.target.elements.number.value;
-    dispatch(addContact({id: Date.now().toString(), name, number}))
-  }
+  const initialValues = {
+    name: '',
+    number: ''
+  };
 
-const FeedbackSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(3, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  number: Yup.string()
-    .matches(/^\d{3}-\d{2}-\d{2}$/, "Must be a valid phone number")
-    .min(3, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-});
+  const handleSubmit = (values, { resetForm }) => {
+    const { name, number } = values;
+    dispatch(addContact({ id, name, number }));
+    resetForm();
+  };
+
+  const FeedbackSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(3, "Too Short!")
+      .max(50, "Too Long!")
+      .required("Required"),
+    number: Yup.string()
+      .matches(/^\d{3}-\d{2}-\d{2}$/, "Valid phone number: XXX-XX-XX")
+      .min(3, "Too Short!")
+      .max(50, "Too Long!")
+      .required("Required"),
+  });
 
   return (
     <Formik
-      // initialValues={initialValues}
+      initialValues={initialValues}
       onSubmit={handleSubmit}
       validationSchema={FeedbackSchema}
     >
