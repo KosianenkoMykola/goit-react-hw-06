@@ -3,7 +3,6 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from "redux-persist/lib/storage";
 import contactsReducer from "./contactsSlice";
 import filtersReducer from "./filtersSlice";
-import contactsData from '../contacts.json';
 
 const persistedContactsReducer = persistReducer(
   {
@@ -14,21 +13,11 @@ const persistedContactsReducer = persistReducer(
   contactsReducer
 );
 
-const preloadedState = {
-  contacts: {
-    items: contactsData,
-  },
-  filters: {
-    name: '',
-  },
-};
-
 export const store = configureStore({
   reducer: {
     contacts: persistedContactsReducer,
     filters: filtersReducer,
   },
-  preloadedState,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

@@ -7,7 +7,6 @@ import { TiContacts } from "react-icons/ti";
 
 
 export default function App() {
-
   return (
     <div className={css.container}>
       <h1 className={css.title}>
